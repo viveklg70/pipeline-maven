@@ -1,7 +1,11 @@
 pipeline {
 
     agent any
-    
+   
+    environment {
+        DOCKER_HUB_PASS = credentials('DOCKER_HUB_PASS')
+    }    
+
     stages {
 
         stage('Build') {
