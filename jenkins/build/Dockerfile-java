@@ -1,0 +1,7 @@
+FROM amazoncorretto:8-alpine-jre
+
+RUN mkdir /app
+
+COPY *.jar /app/app.jar
+
+CMD java -jar /app/app.jar
