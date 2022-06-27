@@ -17,10 +17,24 @@ pipeline {
                 '''
             }
 
+           post {
+               success {
+                   archiveArtifacts artifacts: 'java-app/target/*.jar', fingerprint: true
+               }
+           }
+        }
+
         stage('Test') {
             steps {
                  sh './jenkins/test/test.sh mvn test'
             }
+
+           post {
+               always {
+                   junit 'build/reports/**/*.xml'
+               }
+           }
+
 
         }
 
