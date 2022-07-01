@@ -44,10 +44,16 @@ pipeline {
             }
         }
 
-        stage 'ECR push'
-  docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 'ecr:ap-south-1:AWS-CREDS') {
-    docker.image('push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest').push('latest')
-  }
+        stage('ECR push') {
+            steps {
+               script {
+                   docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 
+                   'ecr:ap-south-1:AWS-CREDS') {
+                   docker.image('push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest').push('latest')
+                  }
+               }
+             }
+         }
  
         stage('Deploy') {
             steps {
