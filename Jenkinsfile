@@ -41,14 +41,14 @@ pipeline {
         stage('Push') {
             steps {
                   sh './jenkins/push/push.sh'
-                  sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 611601100250.dkr.ecr.ap-south-1.amazonaws.com'
-                  sh 'docker tag app:$OLD_BUILD_TAG 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:$NEW_BUILD_TAG'
-                  sh 'docker tag app:$OLD_BUILD_TAG 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest'
-                  sh 'docker push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:$NEW_BUILD_TAG'
-                  sh 'docker push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest'
             }
         }
 
+        stage 'ECR push'
+  docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 'ecr:ap-south-1:AWS-CREDS') {
+    docker.image('push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest').push('latest')
+  }
+ 
         stage('Deploy') {
             steps {
                   sh 'echo deploy'
