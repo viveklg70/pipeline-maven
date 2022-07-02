@@ -46,13 +46,7 @@ pipeline {
 
         stage('ECR push') {
             steps {
-               script {
-                   docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 
-                   'ecr:ap-south-1:jenkins-aws-ecr') {
-                   def myImage = docker.build ('avangels-test')
-                   myImage.push('611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:3.1')
-                  }
-               }
+                  sh './jenkins/push/push_ecr.sh'
              }
          }
  
