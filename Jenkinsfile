@@ -52,14 +52,18 @@ pipeline {
         }
 
 
-        stage('Logging into AWS ECR') {
+        stage('ECR push') {
             steps {
-                script {
-                sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-                }
-                 
-            }
-        }
+               script {
+                   docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 
+                   'ecr:ap-south-1:jenkins-aws-ecr') 
+                  
+               }
+             }
+         }
+
+     
+
 
        // Building Docker images
     stage('Building image') {
