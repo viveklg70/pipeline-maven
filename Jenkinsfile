@@ -4,6 +4,13 @@ pipeline {
    
     environment {
         DOCKER_HUB_PASS = credentials('DOCKER_HUB_PASS')
+
+        AWS_ACCOUNT_ID="611601100250"
+        AWS_DEFAULT_REGION="ap-south-1" 
+        IMAGE_REPO_NAME="avangels-test "
+        IMAGE_TAG="3.2"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+  
     }    
 
     stages {
@@ -44,17 +51,36 @@ pipeline {
             }
         }
 
-       stage('ECR push') {
+
+        stage('Logging into AWS ECR') {
             steps {
-               script {
-                   docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com',
-                   'ecr:ap-south-1:jenkins-aws-ecr') {
-                   def myImage = docker.build ('avangels-test:3.1')
-                   myImage.push('611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:3.1')
-                  }
-               }
-             }
-       }
+                script {
+                sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                }
+                 
+            }
+        }
+
+       // Building Docker images
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
+   
+    // Uploading Docker images into AWS ECR
+    stage('Pushing to ECR') {
+     steps{  
+         script {
+                sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+         }
+        }
+     
+    }
+
  
         stage('Deploy') {
             steps {
