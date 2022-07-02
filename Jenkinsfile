@@ -49,7 +49,7 @@ pipeline {
                script {
                    docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 
                    'ecr:ap-south-1:AWS-CREDS') {
-                   docker.image('push 611601100250.dkr.ecr.ap-south-1.amazonaws.com/avangels-test:latest').push('latest')
+                   docker.image('avangels-test').push('latest')
                   }
                }
              }
