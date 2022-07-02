@@ -49,8 +49,8 @@ pipeline {
                script {
                    docker.withRegistry('https://611601100250.dkr.ecr.ap-south-1.amazonaws.com', 
                    'ecr:ap-south-1:jenkins-aws-ecr') {
-                   def app.1.3 = docker.build ('avangels-test')
-                   app.1.3.push('2.1')
+                   def myImage = docker.build ('avangels-test')
+                   myImage.push('2.1')
                   }
                }
              }
